@@ -1,0 +1,26 @@
+{
+  "name": "workspace",
+  "version": "0.0.0",
+  "license": "MIT",
+  "packageManager": "npm@11.12.1",
+  "workspaces": [
+    "artifacts/*",
+    "lib/*",
+    "lib/integrations/*",
+    "scripts"
+  ],
+  "scripts": {
+    "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*|npm/*) ;; *) echo \"Use pnpm or npm instead\" >&2; exit 1 ;; esac'",
+    "dev": "npm --prefix artifacts/admission-system run dev",
+    "preview": "npm --prefix artifacts/admission-system run serve",
+    "build": "npm run typecheck && npm --prefix artifacts/admission-system run build",
+    "vercel-build": "npm run build",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "npm run typecheck:libs"
+  },
+  "private": true,
+  "devDependencies": {
+    "prettier": "^3.8.3",
+    "typescript": "~5.9.3"
+  }
+}
