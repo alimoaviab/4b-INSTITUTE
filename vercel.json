@@ -2,8 +2,11 @@
   "version": 2,
   "routes": [
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/artifacts/admission-system/dist/$1"
+      "dest": "/artifacts/admission-system/dist/index.html"
     }
   ]
 }
