@@ -37,6 +37,8 @@ export default function StudentDashboard() {
 
   if (!student) return <div className="min-h-screen bg-slate-50 flex items-center justify-center">Loading dashboard...</div>;
 
+  const profileIncomplete = !student.name || !student.fatherName || !student.phone || !student.program;
+
   const StatusIcon = ({ status }: { status?: string }) => {
     if (status === 'approved' || status === 'pass' || status === 'completed') return <CheckCircle2 className="w-5 h-5 text-emerald-500" />;
     if (status === 'rejected' || status === 'fail') return <XCircle className="w-5 h-5 text-rose-500" />;
@@ -65,6 +67,23 @@ export default function StudentDashboard() {
           <h1 className="text-3xl font-bold text-slate-900">Welcome, {student.name}</h1>
           <p className="text-slate-500 mt-1">Track your admission progress here.</p>
         </div>
+
+        {profileIncomplete && (
+          <Card className="border-l-4 border-l-amber-500 bg-amber-50 shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3 text-amber-900">
+                  <Clock className="h-5 w-5" />
+                  <span className="font-semibold">Complete your profile to proceed</span>
+                </div>
+                <p className="text-slate-700">
+                  Please fill out your name, father name, phone, and program details so you can continue to your entry test.
+                </p>
+                <Button onClick={() => setLocation("/student/profile")}>Complete Profile</Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Profile Card */}

@@ -100,7 +100,7 @@ export default function VerifyPage() {
         if (verifyResult.sessionToken) {
            localStorage.setItem("session_token", verifyResult.sessionToken);
         }
-        setLocation("/student/dashboard");
+        setLocation("/student/profile");
       } else {
         setError(verifyResult.message || "Verification failed.");
       }

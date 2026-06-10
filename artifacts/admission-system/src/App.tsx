@@ -7,6 +7,7 @@ import { setAuthTokenGetter } from "@workspace/api-client-react";
 
 import NotFound from "@/pages/not-found";
 import VerifyPage from "@/pages/student/verify";
+import ProfilePage from "@/pages/student/profile";
 import RegisterPage from "@/pages/student/register";
 import InstructionsPage from "@/pages/student/instructions";
 import TestPage from "@/pages/student/test";
@@ -56,6 +57,7 @@ function Router() {
     <Switch>
       <Route path="/" component={VerifyPage} />
       <Route path="/register" component={RegisterPage} />
+      <Route path="/student/profile" component={ProfilePage} />
       <Route path="/instructions" component={InstructionsPage} />
       <Route path="/test" component={TestPage} />
       <Route path="/result" component={ResultPage} />
