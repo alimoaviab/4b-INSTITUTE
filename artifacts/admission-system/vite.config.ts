@@ -49,7 +49,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Separate vendor chunks for better caching
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'react-vendor': ['react', 'react-dom', 'wouter'],
           'ui-components': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
@@ -60,6 +60,7 @@ export default defineConfig({
           ],
           'recharts': ['recharts'],
           'date-utils': ['date-fns'],
+          'query': ['@tanstack/react-query'],
         },
       },
     },
