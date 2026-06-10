@@ -1,12 +1,11 @@
 {
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "artifacts/admission-system/dist",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/"
+      "destination": "/index.html"
     }
   ]
 }

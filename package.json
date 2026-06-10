@@ -12,14 +12,17 @@
   "scripts": {
     "preinstall": "sh -c 'rm -f pnpm-lock.yaml yarn.lock; case \"$npm_config_user_agent\" in npm/*) ;; *) echo \"Use npm instead\" >&2; exit 1 ;; esac'",
     "dev": "npm --prefix artifacts/admission-system run dev",
+    "dev:api": "npm --prefix artifacts/api-server run dev",
     "preview": "npm --prefix artifacts/admission-system run serve",
     "build": "npm run typecheck && npm --prefix artifacts/admission-system run build",
-    "vercel-build": "npm run build && rm -rf dist public && mkdir -p dist public && cp -a artifacts/admission-system/dist/. dist/ && cp -a artifacts/admission-system/dist/. public/",
+    "build:api": "npm --prefix artifacts/api-server run build",
+    "vercel-build": "npm run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "npm run typecheck:libs"
   },
   "private": true,
   "devDependencies": {
+    "@vercel/node": "^3.0.21",
     "prettier": "^3.8.3",
     "rollup": "^4.61.1",
     "typescript": "~5.9.3"
