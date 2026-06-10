@@ -14,7 +14,7 @@
     "dev": "npm --prefix artifacts/admission-system run dev",
     "preview": "npm --prefix artifacts/admission-system run serve",
     "build": "npm run typecheck && npm --prefix artifacts/admission-system run build",
-    "vercel-build": "npm run build",
+    "vercel-build": "npm run build && rm -rf dist public && mkdir -p dist public && cp -a artifacts/admission-system/dist/. dist/ && cp -a artifacts/admission-system/dist/. public/",
     "typecheck:libs": "tsc --build",
     "typecheck": "npm run typecheck:libs"
   },
