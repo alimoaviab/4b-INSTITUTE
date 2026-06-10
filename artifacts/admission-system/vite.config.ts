@@ -63,6 +63,11 @@ export default defineConfig({
           'query': ['@tanstack/react-query'],
         },
       },
+      onwarn(warning, warn) {
+        if (warning.message.includes("Error when using sourcemap for reporting an error")) return;
+        if (warning.message.includes("Can't resolve original location of error")) return;
+        warn(warning);
+      },
     },
     chunkSizeWarningLimit: 1000, // Increase limit to 1000 kB to suppress warning during optimization
     sourcemap: false, // Disable sourcemaps in production to reduce build size
