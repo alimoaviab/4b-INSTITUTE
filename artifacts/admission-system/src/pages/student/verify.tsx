@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -112,7 +112,12 @@ export default function VerifyPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg border-t-4 border-t-primary">
-        <CardHeader className="text-center space-y-2">
+        <CardHeader className="text-center space-y-2 relative">
+                <div className="absolute right-4 top-4">
+                  <a href="/admin/login">
+                    <Button variant="ghost" size="sm">Admin</Button>
+                  </a>
+                </div>
           <div className="mx-auto bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mb-2">
             <UserCheck className="w-8 h-8 text-primary" />
           </div>
