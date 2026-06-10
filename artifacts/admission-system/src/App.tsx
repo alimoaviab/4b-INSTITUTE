@@ -28,6 +28,12 @@ import { AdminLayout } from "@/components/admin-layout";
 
 const queryClient = new QueryClient();
 
+// Setup base URL for production
+if (import.meta.env.VITE_API_URL) {
+  const { setBaseUrl } = await import("@workspace/api-client-react");
+  setBaseUrl(import.meta.env.VITE_API_URL);
+}
+
 // Setup auth token for API client
 setAuthTokenGetter(() => localStorage.getItem("admin_token"));
 
