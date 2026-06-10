@@ -18,7 +18,7 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-async function ensureDefaultAdmin(): Promise<void> {
+export async function ensureDefaultAdmin(): Promise<void> {
   const adminEmail = process.env.ADMIN_EMAIL ?? "admin@admission.edu.pk";
   const adminPassword = process.env.ADMIN_PASSWORD ?? "admin123";
 
