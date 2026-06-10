@@ -3,6 +3,17 @@
   "version": "0.0.0",
   "license": "MIT",
   "packageManager": "pnpm@10.0.0",
+  "pnpm": {
+    "overrides": {
+      "esbuild>@esbuild/darwin-arm64": "-",
+      "esbuild>@esbuild/darwin-x64": "-",
+      "esbuild>@esbuild/freebsd-arm64": "-",
+      "esbuild>@esbuild/freebsd-x64": "-",
+      "esbuild>@esbuild/linux-arm": "-",
+      "esbuild>@esbuild/linux-arm64": "-",
+      "esbuild>@esbuild/linux-ia32": "-"
+    }
+  },
   "workspaces": [
     "artifacts/*",
     "lib/*",
