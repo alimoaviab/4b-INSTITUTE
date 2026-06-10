@@ -1,14 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "artifacts/admission-system/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "artifacts/admission-system/dist"
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",

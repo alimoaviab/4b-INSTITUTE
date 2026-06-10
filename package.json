@@ -4,6 +4,10 @@
   "license": "MIT",
   "packageManager": "pnpm@10.0.0",
   "pnpm": {
+    "settings": {
+      "autoInstallPeers": false,
+      "excludeLinksFromLockfile": false
+    },
     "overrides": {
       "esbuild>@esbuild/darwin-arm64": "-",
       "esbuild>@esbuild/darwin-x64": "-",
