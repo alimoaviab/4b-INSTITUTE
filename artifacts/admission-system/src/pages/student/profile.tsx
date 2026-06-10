@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useGetStudent, useUpdateStudent } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { User, Users, Phone, ClipboardText } from "lucide-react";
+import { User, Users, Phone } from "lucide-react";
 
 const profileSchema = z.object({
   rollNumber: z.string().min(1, "Roll number is required"),
