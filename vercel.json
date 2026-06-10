@@ -5,6 +5,10 @@
       "handle": "filesystem"
     },
     {
+      "src": "/admin(?:/.*)?",
+      "dest": "/artifacts/admission-system/dist/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/artifacts/admission-system/dist/index.html"
     }
