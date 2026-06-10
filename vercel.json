@@ -1,16 +1,10 @@
 {
-  "version": 2,
-  "routes": [
+  "buildCommand": "npm run build",
+  "outputDirectory": "artifacts/admission-system/dist",
+  "rewrites": [
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/admin(?:/.*)?",
-      "dest": "/artifacts/admission-system/dist/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/artifacts/admission-system/dist/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
