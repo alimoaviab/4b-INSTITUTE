@@ -45,6 +45,26 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separate vendor chunks for better caching
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-components': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-select',
+            '@radix-ui/react-tooltip',
+            '@radix-ui/react-label',
+            '@radix-ui/react-slot',
+          ],
+          'recharts': ['recharts'],
+          'date-utils': ['date-fns'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Increase limit to 1000 kB to suppress warning during optimization
+    sourcemap: false, // Disable sourcemaps in production to reduce build size
   },
   server: {
     port,
