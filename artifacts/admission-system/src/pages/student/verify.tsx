@@ -111,6 +111,9 @@ export default function VerifyPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <a href="/admin/login" className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50">
+        <Button variant="ghost" size="sm" className="shadow">Admin</Button>
+      </a>
       <Card className="w-full max-w-md shadow-lg border-t-4 border-t-primary">
         <CardHeader className="text-center space-y-2 relative">
                 <div className="absolute right-4 top-4">
