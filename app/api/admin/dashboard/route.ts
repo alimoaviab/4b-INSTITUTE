@@ -71,9 +71,9 @@ export async function GET() {
       {
         $lookup: {
           from: "students",
-          let: { studentIdObj: { $toObjectId: "$studentId" } },
+          let: { sId: "$studentId" },
           pipeline: [
-            { $match: { $expr: { $eq: ["$_id", "$$studentIdObj"] } } }
+            { $match: { $expr: { $eq: [{ $toString: "$_id" }, { $toString: "$$sId" }] } } }
           ],
           as: "student"
         }

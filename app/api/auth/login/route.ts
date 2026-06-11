@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     // Check Admins first
     let user: any = await adminsCollection.findOne({ email });
     let isStudent = false;
-    console.log("Admin user found:", !!user);
+    console.log("Admin user found:", !!user, "Salt in user:", !!user?.salt);
 
     // If not admin, check Students
     if (!user) {

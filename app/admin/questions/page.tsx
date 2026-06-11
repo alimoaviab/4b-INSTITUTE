@@ -300,9 +300,9 @@ export default function QuestionsPage() {
                       <TableCell className="font-medium truncate max-w-[300px]" title={q.text}>
                         {q.text}
                       </TableCell>
-                      <TableCell className="capitalize">{q.type.replace("_", " ")}</TableCell>
-                      <TableCell>{q.subject}</TableCell>
-                      <TableCell>{q.marks}</TableCell>
+                      <TableCell className="capitalize">{q.type?.replace("_", " ") || "—"}</TableCell>
+                      <TableCell>{q.subject || "—"}</TableCell>
+                      <TableCell>{q.marks ?? "—"}</TableCell>
                       <TableCell className="text-right">
                         <Button variant="ghost" size="icon" onClick={() => openEdit(q)}>
                           <Edit className="h-4 w-4 text-blue-600" />

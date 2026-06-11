@@ -13,6 +13,7 @@ export default function Home() {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraActive, setCameraActive] = useState(false);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [rollNumber, setRollNumber] = useState("");
   const [cnic, setCnic] = useState("");
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -97,13 +98,33 @@ export default function Home() {
     };
   }, [stream]);
 
-  const handleProceed = () => {
+  const capturePhoto = () => {
+    if (videoRef.current) {
+      const canvas = document.createElement("canvas");
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL("image/jpeg");
+        setCapturedImage(dataUrl);
+      }
+    }
+  };
+
+  const retakePhoto = () => {
+    setCapturedImage(null);
+  };
+
+  const [verifying, setVerifying] = useState(false);
+
+  const handleProceed = async () => {
     if (!rollNumber || !cnic) {
       alert("Please enter both Roll Number and CNIC");
       return;
     }
-    if (!cameraActive) {
-      alert("Please enable camera verification first");
+    if (!capturedImage) {
+      alert("Please capture your photo first");
       return;
     }
     
@@ -111,23 +132,44 @@ export default function Home() {
       alert("Please enter a valid CNIC number");
       return;
     }
+
+    setVerifying(true);
     
-    // Auto-login logic for the student
-    localStorage.setItem("rollNumber", rollNumber);
-    localStorage.setItem("cnic", cnic);
-    
-    // Create a dummy user session info in local storage for the test flow to recognize
-    localStorage.setItem("studentData", JSON.stringify({
-       rollNumber,
-       cnic,
-       name: "Student Applicant",
-       program: "CS",
-    }));
-    
-    stopCamera();
-    
-    // Directly push to instructions page to start the paper
-    router.push("/student/instructions");
+    try {
+      // Call the API to verify student and create session cookie
+      const res = await fetch("/api/auth/verify-student", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rollNumber: rollNumber.trim(), cnic: cnic.trim() }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Verification failed. Please try again.");
+        setVerifying(false);
+        return;
+      }
+
+      // Save to localStorage for UI display purposes
+      localStorage.setItem("rollNumber", rollNumber);
+      localStorage.setItem("cnic", cnic);
+      localStorage.setItem("capturedPhoto", capturedImage);
+      localStorage.setItem("studentData", JSON.stringify({
+        rollNumber,
+        cnic,
+        name: data.student?.name || "Student",
+        program: "CS",
+      }));
+
+      stopCamera();
+
+      // Session cookie is now set by the API, redirect to instructions
+      router.push("/student/instructions");
+    } catch (err) {
+      alert("Network error. Please check your connection and try again.");
+      setVerifying(false);
+    }
   };
 
   return (
@@ -173,8 +215,11 @@ export default function Home() {
                   autoPlay
                   playsInline
                   muted
-                  className={`w-full h-full object-cover ${cameraActive ? 'block' : 'hidden'}`}
+                  className={`w-full h-full object-cover ${cameraActive && !capturedImage ? 'block' : 'hidden'}`}
                 />
+                {capturedImage && (
+                  <img src={capturedImage} alt="Captured" className="w-full h-full object-cover" />
+                )}
                 
                 {!cameraActive && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 bg-gradient-to-br from-gray-800 to-gray-900">
@@ -217,12 +262,19 @@ export default function Home() {
                 )}
               </div>
               
-              {cameraActive && (
-                <div className="mt-4 flex justify-center gap-3">
+              {cameraActive && !capturedImage && (
+                <div className="mt-4 flex flex-col md:flex-row items-center justify-center gap-3">
                   <div className="bg-green-50 border-2 border-green-500 rounded-lg px-4 py-2 text-green-700 font-semibold flex items-center gap-2">
                     <CheckCircle className="w-5 h-5" />
-                    Camera is Active & Recording
+                    Camera is Active
                   </div>
+                  <Button 
+                    onClick={capturePhoto}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                  >
+                    <Camera className="w-4 h-4 mr-2" />
+                    Capture Photo
+                  </Button>
                   <Button 
                     onClick={stopCamera}
                     variant="outline"
@@ -230,6 +282,22 @@ export default function Home() {
                     className="text-red-600 border-2 border-red-600 hover:bg-red-50 font-semibold"
                   >
                     Stop Camera
+                  </Button>
+                </div>
+              )}
+              
+              {capturedImage && (
+                <div className="mt-4 flex flex-col md:flex-row items-center justify-center gap-3">
+                  <div className="bg-green-50 border-2 border-green-500 rounded-lg px-4 py-2 text-green-700 font-semibold flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    Photo Captured Successfully
+                  </div>
+                  <Button 
+                    onClick={retakePhoto}
+                    variant="outline"
+                    className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold"
+                  >
+                    Retake Photo
                   </Button>
                 </div>
               )}
@@ -251,7 +319,8 @@ export default function Home() {
                   placeholder="Enter your roll number (e.g., 2024001)"
                   value={rollNumber}
                   onChange={(e) => setRollNumber(e.target.value)}
-                  className="border-2 border-blue-600 text-gray-900 bg-white focus:ring-2 focus:ring-blue-600 h-14 text-lg"
+                  style={{ backgroundColor: "#ffffff", color: "#111827" }}
+                  className="border-2 border-blue-600 h-14 text-lg"
                 />
               </div>
 
@@ -265,7 +334,7 @@ export default function Home() {
                   placeholder="42101-1234567-8"
                   value={cnic}
                   onChange={(e) => {
-                    let value = e.target.value.replace(/[^\\d]/g, '');
+                    let value = e.target.value.replace(/[^0-9]/g, '');
                     
                     if (value.length > 5) {
                       value = value.slice(0, 5) + '-' + value.slice(5);
@@ -280,7 +349,8 @@ export default function Home() {
                     setCnic(value);
                   }}
                   maxLength={15}
-                  className="border-2 border-blue-600 text-gray-900 bg-white focus:ring-2 focus:ring-blue-600 h-14 text-lg font-mono"
+                  style={{ backgroundColor: "#ffffff", color: "#111827" }}
+                  className="border-2 border-blue-600 h-14 text-lg font-mono"
                 />
                 <p className="text-sm text-gray-500 font-medium">Format: XXXXX-XXXXXXX-X (13 digits)</p>
               </div>
@@ -291,9 +361,9 @@ export default function Home() {
             onClick={handleProceed}
             size="lg"
             className="w-full bg-gradient-to-r from-blue-600 via-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white h-16 text-xl font-bold shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!rollNumber || !cnic || !cameraActive}
+            disabled={!rollNumber || !cnic || !capturedImage || verifying}
           >
-            {!cameraActive ? "⚠️ Enable Camera First" : "Login & Start Paper →"}
+            {verifying ? "Verifying... Please Wait" : !capturedImage ? "⚠️ Capture Photo First" : "Verify & Start Paper →"}
           </Button>
         </div>
       </div>
