@@ -22,6 +22,7 @@ export default function TestPage() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [markedForReview, setMarkedForReview] = useState<Record<number, boolean>>({});
   const [violations, setViolations] = useState<string[]>([]);
+  const [lockedUpTo, setLockedUpTo] = useState(0); // Questions up to this number are locked
   
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -131,6 +132,8 @@ export default function TestPage() {
   }, [timeLeft]);
 
   const handleAnswerSelect = (value: string) => {
+    // Don't allow changing locked questions
+    if (currentQuestion <= lockedUpTo) return;
     const newAnswers = { ...answers, [currentQuestion]: value };
     setAnswers(newAnswers);
     localStorage.setItem("testAnswers", JSON.stringify(newAnswers));
@@ -244,19 +247,17 @@ export default function TestPage() {
                 
                 <div className="flex gap-3">
                     <Button 
-                        variant="outline" 
-                        disabled={currentQuestion === 1}
-                        onClick={() => setCurrentQuestion(currentQuestion - 1)}
-                        className="border-gray-300 text-gray-700 hover:bg-gray-100 w-24"
-                    >
-                        Previous
-                    </Button>
-                    <Button 
-                        onClick={() => setCurrentQuestion(currentQuestion + 1)} 
+                        onClick={() => {
+                          // Lock current question when moving to next
+                          if (currentQuestion > lockedUpTo) {
+                            setLockedUpTo(currentQuestion);
+                          }
+                          setCurrentQuestion(currentQuestion + 1);
+                        }} 
                         disabled={currentQuestion === totalQuestions}
-                        className="bg-blue-600 hover:bg-blue-700 text-white w-24 shadow-sm"
+                        className="bg-blue-600 hover:bg-blue-700 text-white w-32 shadow-sm"
                     >
-                        Next
+                        Save & Next →
                     </Button>
                 </div>
               </CardFooter>
@@ -305,10 +306,14 @@ export default function TestPage() {
                   const isMarked = markedForReview[qNum];
                   const isCurrent = currentQuestion === qNum;
                   
+                  const isLocked = qNum <= lockedUpTo;
+
                   let btnClass = "bg-white border-gray-300 text-gray-600 hover:bg-gray-100"; // Default
                   
                   if (isCurrent) {
                       btnClass = "ring-2 ring-blue-600 ring-offset-1 border-blue-600 bg-blue-50 text-blue-700 font-bold";
+                  } else if (isLocked) {
+                      btnClass = "bg-gray-200 border-gray-300 text-gray-400 cursor-not-allowed";
                   } else if (isMarked) {
                       btnClass = "bg-orange-100 border-orange-400 text-orange-700";
                   } else if (isAnswered) {
@@ -318,10 +323,14 @@ export default function TestPage() {
                   return (
                     <button
                       key={qNum}
-                      onClick={() => setCurrentQuestion(qNum)}
+                      onClick={() => {
+                        if (!isLocked) setCurrentQuestion(qNum);
+                      }}
+                      disabled={isLocked}
                       className={`w-10 h-10 rounded border text-sm font-semibold transition-all ${btnClass}`}
+                      title={isLocked ? "This question is locked" : `Question ${qNum}`}
                     >
-                      {qNum}
+                      {isLocked ? "🔒" : qNum}
                     </button>
                   );
                 })}
@@ -331,7 +340,7 @@ export default function TestPage() {
               <div className="border-t border-gray-200 pt-4 mt-2 space-y-2 text-xs font-medium text-gray-600">
                   <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-green-100 border border-green-400"></div> Answered</div>
                   <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-white border border-gray-300"></div> Not Answered</div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-orange-100 border border-orange-400"></div> Marked for Review</div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-gray-200 border border-gray-300"></div> 🔒 Locked</div>
                   <div className="flex items-center gap-2"><div className="w-3 h-3 rounded ring-2 ring-blue-600 bg-blue-50"></div> Current Question</div>
               </div>
               
