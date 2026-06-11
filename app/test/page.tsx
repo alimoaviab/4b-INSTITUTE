@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,98 +12,140 @@ export default function TestPage() {
   const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const totalQuestions = 50;
+  const [studentName, setStudentName] = useState("");
+  const [rollNumber, setRollNumber] = useState("");
+
+  useEffect(() => {
+    // Get student data
+    const name = localStorage.getItem("studentName");
+    const roll = localStorage.getItem("rollNumber");
+    
+    if (!name || !roll) {
+      router.push("/student/verify");
+      return;
+    }
+    
+    setStudentName(name);
+    setRollNumber(roll);
+  }, [router]);
+
+  const handleSubmit = () => {
+    if (confirm("Are you sure you want to submit the test?")) {
+      router.push("/result");
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
+    <div className="min-h-screen bg-white p-6">
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex justify-between items-center">
+        {/* Header */}
+        <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Entrance Test</h1>
-            <p className="text-slate-500">Question {currentQuestion} of {totalQuestions}</p>
+            <h1 className="text-2xl font-bold text-black">Entrance Test</h1>
+            <p className="text-black">
+              Student: <span className="font-medium">{studentName}</span> | Roll#: <span className="font-medium">{rollNumber}</span>
+            </p>
+            <p className="text-black mt-1">Question {currentQuestion} of {totalQuestions}</p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-slate-600">
-              <Clock className="w-5 h-5" />
-              <span className="font-mono text-lg">45:30</span>
+            <div className="flex items-center gap-2 text-black">
+              <Clock className="w-5 h-5 text-blue-600" />
+              <span className="font-mono text-lg font-bold">45:30</span>
             </div>
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => router.push("/admin/login")}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-white border-blue-600 text-blue-600 hover:bg-blue-50"
             >
               <ShieldAlert className="w-4 h-4" />
-              Admin Panel
+              Admin
             </Button>
-            <Button variant="destructive" size="sm">
+            <Button 
+              onClick={handleSubmit}
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
               Submit Test
             </Button>
           </div>
         </div>
 
-        <Card>
-          <CardHeader>
+        {/* Question Card */}
+        <Card className="border-blue-600 bg-white">
+          <CardHeader className="bg-blue-600 text-white">
             <CardTitle className="text-lg font-medium">
               Question {currentQuestion}: What is the capital of Pakistan?
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <RadioGroup defaultValue="option1" className="space-y-3">
-              <div className="flex items-center space-x-2 p-3 rounded border hover:bg-slate-50">
-                <RadioGroupItem value="option1" id="option1" />
-                <Label htmlFor="option1" className="flex-1 cursor-pointer">
+              <div className="flex items-center space-x-2 p-3 rounded border-2 border-blue-600 hover:bg-blue-50 bg-white">
+                <RadioGroupItem value="option1" id="option1" className="border-blue-600 text-blue-600" />
+                <Label htmlFor="option1" className="flex-1 cursor-pointer text-black">
                   A. Karachi
                 </Label>
               </div>
-              <div className="flex items-center space-x-2 p-3 rounded border hover:bg-slate-50">
-                <RadioGroupItem value="option2" id="option2" />
-                <Label htmlFor="option2" className="flex-1 cursor-pointer">
+              <div className="flex items-center space-x-2 p-3 rounded border-2 border-blue-600 hover:bg-blue-50 bg-white">
+                <RadioGroupItem value="option2" id="option2" className="border-blue-600 text-blue-600" />
+                <Label htmlFor="option2" className="flex-1 cursor-pointer text-black">
                   B. Islamabad
                 </Label>
               </div>
-              <div className="flex items-center space-x-2 p-3 rounded border hover:bg-slate-50">
-                <RadioGroupItem value="option3" id="option3" />
-                <Label htmlFor="option3" className="flex-1 cursor-pointer">
+              <div className="flex items-center space-x-2 p-3 rounded border-2 border-blue-600 hover:bg-blue-50 bg-white">
+                <RadioGroupItem value="option3" id="option3" className="border-blue-600 text-blue-600" />
+                <Label htmlFor="option3" className="flex-1 cursor-pointer text-black">
                   C. Lahore
                 </Label>
               </div>
-              <div className="flex items-center space-x-2 p-3 rounded border hover:bg-slate-50">
-                <RadioGroupItem value="option4" id="option4" />
-                <Label htmlFor="option4" className="flex-1 cursor-pointer">
+              <div className="flex items-center space-x-2 p-3 rounded border-2 border-blue-600 hover:bg-blue-50 bg-white">
+                <RadioGroupItem value="option4" id="option4" className="border-blue-600 text-blue-600" />
+                <Label htmlFor="option4" className="flex-1 cursor-pointer text-black">
                   D. Peshawar
                 </Label>
               </div>
             </RadioGroup>
 
-            <div className="flex items-center gap-2 mt-4 p-3 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800">
-              <AlertCircle className="w-4 h-4" />
+            <div className="flex items-center gap-2 mt-4 p-3 bg-blue-50 border-2 border-blue-600 rounded text-black">
+              <AlertCircle className="w-4 h-4 text-blue-600" />
               <span>Your camera is being monitored for verification</span>
             </div>
           </CardContent>
         </Card>
 
+        {/* Navigation Buttons */}
         <div className="flex justify-between">
-          <Button variant="outline" disabled={currentQuestion === 1}>
+          <Button 
+            variant="outline" 
+            disabled={currentQuestion === 1}
+            onClick={() => setCurrentQuestion(currentQuestion - 1)}
+            className="bg-white border-blue-600 text-blue-600 hover:bg-blue-50"
+          >
             Previous
           </Button>
-          <Button onClick={() => setCurrentQuestion(currentQuestion + 1)} disabled={currentQuestion === totalQuestions}>
+          <Button 
+            onClick={() => setCurrentQuestion(currentQuestion + 1)} 
+            disabled={currentQuestion === totalQuestions}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
             Next
           </Button>
         </div>
 
-        <Card>
-          <CardHeader>
+        {/* Question Navigation Grid */}
+        <Card className="border-blue-600 bg-white">
+          <CardHeader className="bg-blue-600 text-white">
             <CardTitle className="text-base">Question Navigation</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <div className="grid grid-cols-10 gap-2">
               {Array.from({ length: totalQuestions }, (_, i) => (
                 <button
                   key={i}
-                  className={`w-10 h-10 rounded border text-sm font-medium ${
+                  className={`w-10 h-10 rounded border-2 text-sm font-medium ${
                     i + 1 === currentQuestion
-                      ? "bg-blue-600 text-white"
-                      : "bg-white hover:bg-slate-50"
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white text-black border-blue-600 hover:bg-blue-50"
                   }`}
                   onClick={() => setCurrentQuestion(i + 1)}
                 >
