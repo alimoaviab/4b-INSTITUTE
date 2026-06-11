@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Edit, Trash2, Calendar } from "lucide-react";
+import { Search, Plus, Edit, Trash2, Calendar, Power, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function TestsPage() {
@@ -148,9 +148,22 @@ export default function TestsPage() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const handleActivate = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to activate "${title}"? This will deactivate all other tests.`)) return;
+    try {
+      const res = await fetch(`/api/admin/tests/${id}/activate`, { method: "POST" });
+      if (!res.ok) throw new Error("Failed to activate");
+      toast.success(`"${title}" is now the Active Test!`);
+      fetchTests();
+    } catch (error) {
+      toast.error("Failed to activate test");
+    }
+  };
+
+  const getStatusBadge = (status: string, isActive: boolean) => {
+    if (isActive) return <Badge className="bg-emerald-500 text-white animate-pulse">🟢 Active</Badge>;
     switch (status) {
-      case "published": return <Badge className="bg-emerald-500">Published</Badge>;
+      case "published": return <Badge className="bg-blue-500 text-white">Published</Badge>;
       case "archived": return <Badge variant="secondary">Archived</Badge>;
       default: return <Badge variant="outline">Draft</Badge>;
     }
@@ -308,9 +321,14 @@ export default function TestsPage() {
                 </TableHeader>
                 <TableBody>
                   {tests.map((test) => (
-                    <TableRow key={test._id}>
-                      <TableCell className="font-medium">{test.title}</TableCell>
-                      <TableCell>{getStatusBadge(test.status)}</TableCell>
+                    <TableRow key={test._id} className={test.isActive ? "bg-emerald-50" : ""}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {test.isActive && <CheckCircle className="h-4 w-4 text-emerald-600" />}
+                          {test.title}
+                        </div>
+                      </TableCell>
+                      <TableCell>{getStatusBadge(test.status, test.isActive)}</TableCell>
                       <TableCell>{test.durationMinutes} mins</TableCell>
                       <TableCell>{test.totalMarks} (Pass: {test.passingMarks})</TableCell>
                       <TableCell>
@@ -320,6 +338,19 @@ export default function TestsPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
+                        {!test.isActive ? (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleActivate(test._id, test.title)}
+                            className="text-emerald-600 hover:bg-emerald-50 font-semibold text-xs mr-1"
+                          >
+                            <Power className="h-4 w-4 mr-1" />
+                            Activate
+                          </Button>
+                        ) : (
+                          <Badge className="bg-emerald-100 text-emerald-700 mr-2">Live</Badge>
+                        )}
                         <Button variant="ghost" size="icon" onClick={() => openEdit(test)}>
                           <Edit className="h-4 w-4 text-blue-600" />
                         </Button>

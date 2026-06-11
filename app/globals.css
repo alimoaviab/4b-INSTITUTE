@@ -81,13 +81,13 @@
   --card: 0 0% 100%;
   --card-foreground: 0 0% 10%;
   --card-border: 214 32% 91%;
-  --sidebar: 224 71% 18%;
-  --sidebar-foreground: 0 0% 98%;
-  --sidebar-border: 224 71% 12%;
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 0 0% 10%;
+  --sidebar-border: 214 32% 91%;
   --sidebar-primary: 221 83% 53%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 224 71% 25%;
-  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-accent: 214 32% 95%;
+  --sidebar-accent-foreground: 0 0% 10%;
   --sidebar-ring: 221 83% 53%;
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 10%;
