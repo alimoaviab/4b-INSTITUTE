@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resultsCollection, testSessionsCollection, testsCollection, questionsCollection } from "@/lib/db";
+import { resultsCollection, testSessionsCollection, testsCollection, questionsCollection, studentsCollection, applicationsCollection } from "@/lib/db";
 import { ObjectId } from "mongodb";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -34,9 +34,17 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       };
     });
 
+    // Fetch student full details
+    const student = await studentsCollection.findOne({ _id: new ObjectId(result.studentId) });
+    
+    // Fetch application details if any
+    const application = await applicationsCollection.findOne({ studentId: result.studentId });
+
     return NextResponse.json({
       result,
       attempt,
+      student,
+      application,
       detailedAnswers
     });
 

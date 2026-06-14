@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { studentsCollection } from "@/lib/db";
+import { studentsCollection, resultsCollection } from "@/lib/db";
 import { createSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
@@ -42,6 +42,9 @@ export async function POST(request: Request) {
       name: student.name || "Student",
       rollNumber: student.rollNumber,
     });
+    
+    // Check if student has already completed a test
+    const existingResult = await resultsCollection.findOne({ studentId: student._id.toString() });
 
     return NextResponse.json({
       success: true,
@@ -51,6 +54,8 @@ export async function POST(request: Request) {
         name: student.name,
         isNew: false,
       },
+      hasCompletedTest: !!existingResult,
+      testScore: existingResult ? existingResult.percentage : null
     });
   } catch (error) {
     console.error("Student verify error:", error);

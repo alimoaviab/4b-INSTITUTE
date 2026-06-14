@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,13 @@ import { ShieldAlert, AlertTriangle, BookOpen, Clock, FileText, CheckCircle } fr
 export default function InstructionsPage() {
   const router = useRouter();
   const [agreed, setAgreed] = useState(false);
+
+  useEffect(() => {
+    const score = localStorage.getItem("testScore");
+    if (score !== null) {
+      router.push("/student/portal");
+    }
+  }, [router]);
 
   const handleProceed = () => {
     if (agreed) {

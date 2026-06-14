@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Eye, CheckCircle, XCircle, FileText } from "lucide-react";
+import { Search, Eye, CheckCircle, XCircle, FileText, Users } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ResultsPage() {
@@ -20,6 +20,8 @@ export default function ResultsPage() {
   
   const [selectedResult, setSelectedResult] = useState<any>(null);
   const [detailedAnswers, setDetailedAnswers] = useState<any[]>([]);
+  const [detailedStudent, setDetailedStudent] = useState<any>(null);
+  const [detailedApplication, setDetailedApplication] = useState<any>(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -60,6 +62,8 @@ export default function ResultsPage() {
       if (!res.ok) throw new Error("Failed to fetch details");
       const data = await res.json();
       setDetailedAnswers(data.detailedAnswers);
+      setDetailedStudent(data.student);
+      setDetailedApplication(data.application);
     } catch (error) {
       toast.error("Failed to load detailed answers");
       setIsDialogOpen(false);
@@ -178,6 +182,48 @@ export default function ResultsPage() {
                      <p className="text-lg font-bold text-slate-900">{selectedResult?.attempt?.cheatingFlags || 0}</p>
                    </div>
                 </div>
+
+                {detailedStudent && (
+                  <div className="bg-white border rounded-lg p-4 shadow-sm space-y-3">
+                    <h3 className="font-semibold text-lg text-slate-800 border-b pb-2 flex items-center gap-2">
+                      <Users className="w-5 h-5 text-blue-600" /> Applicant Record
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-slate-500 font-medium">Full Name</p>
+                        <p className="font-semibold text-slate-900">{detailedStudent.name || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 font-medium">Father's Name</p>
+                        <p className="font-semibold text-slate-900">{detailedApplication?.fatherName || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 font-medium">Roll Number</p>
+                        <p className="font-semibold text-slate-900">{detailedStudent.rollNumber || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 font-medium">CNIC / B-Form</p>
+                        <p className="font-semibold text-slate-900">{detailedStudent.cnic || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 font-medium">Email Address</p>
+                        <p className="font-semibold text-slate-900">{detailedStudent.email || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 font-medium">Phone Number</p>
+                        <p className="font-semibold text-slate-900">{detailedStudent.phone || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 font-medium">City</p>
+                        <p className="font-semibold text-slate-900">{detailedApplication?.city || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-500 font-medium">Selected Program</p>
+                        <p className="font-semibold text-blue-600">{detailedApplication?.program || "N/A"}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-4">
                   <h3 className="font-semibold text-lg border-b pb-2">Answer Breakdown</h3>

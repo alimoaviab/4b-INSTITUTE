@@ -34,9 +34,15 @@ export default function TestPage() {
       try {
         const name = localStorage.getItem("studentName");
         const roll = localStorage.getItem("rollNumber");
+        const score = localStorage.getItem("testScore");
         
         if (!name || !roll) {
           router.push("/student/verify");
+          return;
+        }
+
+        if (score !== null) {
+          router.push("/student/portal");
           return;
         }
         
