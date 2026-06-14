@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BookOpen, User, FileText, Award, Calendar, Bell, Download, LogOut, CheckCircle, Clock } from "lucide-react";
+import { BookOpen, User, FileText, Award, Calendar, Bell, Download, LogOut, CheckCircle, Clock, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function StudentPortal() {

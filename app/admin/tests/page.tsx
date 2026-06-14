@@ -161,7 +161,7 @@ export default function TestsPage() {
   };
 
   const getStatusBadge = (status: string, isActive: boolean) => {
-    if (isActive) return <Badge className="bg-emerald-500 text-white animate-pulse">🟢 Active</Badge>;
+    if (isActive) return <Badge className="bg-emerald-500 text-white animate-pulse"><CheckCircle className="w-3 h-3 mr-1 inline" /> Active</Badge>;
     switch (status) {
       case "published": return <Badge className="bg-blue-500 text-white">Published</Badge>;
       case "archived": return <Badge variant="secondary">Archived</Badge>;

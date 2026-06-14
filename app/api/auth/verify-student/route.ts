@@ -21,41 +21,10 @@ export async function POST(request: Request) {
     });
 
     if (!student) {
-      // For now, auto-create a student record if not found
-      // This allows any student to verify and take the test
-      const newStudent = {
-        rollNumber: rollNumber.trim(),
-        cnic: cnic.trim(),
-        name: "Student " + rollNumber.trim(),
-        fatherName: "",
-        phone: "",
-        program: "General",
-        isEligible: true,
-        isVerified: true,
-        isBlocked: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      const result = await studentsCollection.insertOne(newStudent);
-
-      // Create session for new student
-      await createSession({
-        id: result.insertedId.toString(),
-        role: "student" as const,
-        name: newStudent.name,
-        rollNumber: newStudent.rollNumber,
-      });
-
-      return NextResponse.json({
-        success: true,
-        student: {
-          id: result.insertedId.toString(),
-          rollNumber: newStudent.rollNumber,
-          name: newStudent.name,
-          isNew: true,
-        },
-      });
+      return NextResponse.json(
+        { error: "Student not found. Please verify your Roll Number and CNIC or contact the administration." },
+        { status: 404 }
+      );
     }
 
     // Check if student is blocked
