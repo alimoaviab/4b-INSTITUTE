@@ -192,15 +192,27 @@ export default function VerifyPage() {
 
             <div className="space-y-1.5">
               <label htmlFor="cnic" className="text-[15px] font-semibold text-slate-800">
-                CNIC (Without dashes)
+                CNIC Number
               </label>
               <input
                 id="cnic"
                 type="text"
-                placeholder="e.g. 3520212345678"
-                value={cnic}
-                onChange={(e) => setCnic(e.target.value)}
-                className="w-full h-12 bg-white border border-slate-300 rounded-xl px-4 outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 transition-all text-[15px] text-slate-800 placeholder:text-slate-400"
+                placeholder="e.g. 35202-1234567-8"
+                value={cnic || ""}
+                onChange={(e) => {
+                  const isDeleting = e.target.value.length < (cnic || "").length;
+                  let val = e.target.value.replace(/[^0-9]/g, '');
+                  if (val.length > 5) val = val.slice(0, 5) + '-' + val.slice(5);
+                  if (val.length > 13) val = val.slice(0, 13) + '-' + val.slice(13);
+                  if (val.length > 15) val = val.slice(0, 15);
+                  if (!isDeleting) {
+                    if (val.length === 5) val += '-';
+                    if (val.length === 13) val += '-';
+                  }
+                  setCnic(val);
+                }}
+                maxLength={15}
+                className="w-full h-12 bg-white border border-slate-300 rounded-xl px-4 outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 transition-all text-[15px] text-slate-800 placeholder:text-slate-400 font-mono"
               />
             </div>
           </div>

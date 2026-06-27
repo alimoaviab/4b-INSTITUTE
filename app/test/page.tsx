@@ -52,10 +52,11 @@ export default function TestPage() {
         const res = await fetch("/api/student/test-data");
         if (!res.ok) {
           if (res.status === 401) {
-            router.push("/student/verify");
+            router.push("/");
             return;
           }
-          throw new Error("Failed to fetch test data");
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || "Failed to fetch test data");
         }
         const data = await res.json();
         setTestData(data.test);
@@ -72,8 +73,9 @@ export default function TestPage() {
         if (savedAnswers) setAnswers(JSON.parse(savedAnswers));
         
         setLoading(false);
-      } catch (err) {
-        toast.error("Failed to load test. Please try again.");
+      } catch (err: any) {
+        toast.error(err.message || "Failed to load test. Please try again.");
+        setLoading(false);
       }
     };
     
@@ -235,10 +237,22 @@ export default function TestPage() {
     );
   }
 
-  if (!questions.length) {
+  if (!testData || !questions.length) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h2 className="text-2xl text-red-600 font-bold">No questions found for this test.</h2>
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+        <Card className="max-w-md w-full p-8 text-center shadow-lg border-red-100">
+          <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Test Not Available</h2>
+          <p className="text-gray-600 mb-6">
+            There is currently no active test published by the administration, or the test has no questions. 
+          </p>
+          <Button 
+            onClick={() => router.push("/")}
+            className="bg-blue-600 hover:bg-blue-700 w-full"
+          >
+            Return to Home
+          </Button>
+        </Card>
       </div>
     );
   }

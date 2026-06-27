@@ -14,11 +14,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Find student by rollNumber and cnic
-    const student = await studentsCollection.findOne({
-      rollNumber: rollNumber.trim(),
-      cnic: cnic.trim(),
-    });
+    // Find student by rollNumber case-insensitively
+    const students = await studentsCollection.find({
+      rollNumber: new RegExp(`^${rollNumber.trim()}$`, 'i')
+    }).toArray();
+
+    // Match CNIC ignoring dashes
+    const targetCnicDigits = cnic.replace(/[^\d]/g, '');
+    const student = students.find(s => s.cnic.replace(/[^\d]/g, '') === targetCnicDigits);
 
     if (!student) {
       return NextResponse.json(

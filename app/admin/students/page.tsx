@@ -174,7 +174,18 @@ export default function StudentsPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="cnic">CNIC / B-Form *</Label>
-                      <Input id="cnic" placeholder="XXXXX-XXXXXXX-X" required value={formData.cnic} onChange={e => setFormData({...formData, cnic: e.target.value})} className="border-gray-300 focus:ring-blue-500" />
+                      <Input id="cnic" placeholder="XXXXX-XXXXXXX-X" required value={formData.cnic || ""} onChange={e => {
+                        const isDeleting = e.target.value.length < (formData.cnic || "").length;
+                        let val = e.target.value.replace(/[^0-9]/g, '');
+                        if (val.length > 5) val = val.slice(0, 5) + '-' + val.slice(5);
+                        if (val.length > 13) val = val.slice(0, 13) + '-' + val.slice(13);
+                        if (val.length > 15) val = val.slice(0, 15);
+                        if (!isDeleting) {
+                          if (val.length === 5) val += '-';
+                          if (val.length === 13) val += '-';
+                        }
+                        setFormData({...formData, cnic: val});
+                      }} maxLength={15} className="border-gray-300 focus:ring-blue-500 font-mono" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="name">Full Name *</Label>
